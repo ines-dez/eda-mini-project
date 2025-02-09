@@ -1,0 +1,8 @@
+---
+title: "EDA Mini Project"
+author: "Ines Dezcallar"
+format: html
+editor: visual
+---
+
+## Exercise
