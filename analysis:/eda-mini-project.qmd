@@ -6,7 +6,19 @@ editor: visual
 embed-resources: true
 ---
 
+
+
+
 ## Exercise 3
+
+
+I have downloaded data from the World Federation of Exchanges, which collects data on many stock exchanges and clearing houses across the world. Thus, individual stock exchanges are my unit of analysis. I have decided to select only stock exchanges which are members of this organization, and that are not located in Western Europe or North America, i.e. countries that could be either emerging or frontier markets. With that in mind, I collected annual data from 2000 until 2025, to see the evolution of traded value and market capitalization of in these stock exchanges, as I would like to analyze how far has financial development affected these countries since the beginning of the century. 
+
+There are two different types of variables in the data. 
+First, the variables "stock_ex", which identifies each stock market, as well as the variable "year" help to uniquely identify an observation in the data. The data is collected by the WFE on their members. 
+Second, the variables "Region" and "MSCI" identify the region in which the stock-market is located, and whether they appear in Morgan Stanley Capital International indexes for emerging and frontier markets. 
+Thirdly, the variables "total_market_capitalization", "total_value_trade", "for_value_trade" and "dom_value_trade" measures market capialization and value traded in a given market in millions of US dollars. 
+Lastly, the variables "total_listed_companies" and "dom_listed_companies" are full numbers that provide an idea of the number of public entreprises in a given stock market. 
 
 I completed the following steps to clean the data. 
 
@@ -14,11 +26,11 @@ I completed the following steps to clean the data.
 
 library(readxl)
 library(tidyverse)
-library(here)
+
 
 #Work directory: [1] "/Users/inesdezcallar/Desktop/Data Science Advance/Problem Set 1/assignment03/eda-mini-project:"
 
-Total_mar_cap <- read_excel(here("data:/Equity_data_1 3.xls"), 
+Total_mar_cap <- read_excel(("data:/Equity_data_1 3.xls"), 
 sheet = "Total Market Cap")
 
 mar_cap_new_listings <- read_excel("data:/Equity_data_1 3.xls", 
@@ -248,10 +260,12 @@ Equity_ft <- Equity_ft %>%
     TRUE ~ NA  
   ))
 
+
+
 Equity_ft <- Equity_ft %>%
   mutate(MSCI = case_when(
     `stock_ex` == "Abu Dhabi Securities Exchange" ~ "Frontier Market",
-    `stock_ex` == "Amman Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Amman Stock Exchange" ~ "Frontier Market", 
     `stock_ex` == "Bahrain Bourse" ~ "Frontier Market",
     `stock_ex` == "Bourse de Casablanca" ~ "Frontier Market",
     `stock_ex` == "Tunis Stock Exchange" ~ "Frontier Market",
@@ -303,3 +317,9 @@ select(stock_ex, year, total_market_capitalization, total_listed_companies, dom_
 
 
 
+summarize function instead of summary and what kind of statitics are looking for: add the income for a group in specific 
+do 8 staticts across all the variables 
+big table and explain 8 things 
+
+
+commit 6 times, and push it six times to the main branch 
