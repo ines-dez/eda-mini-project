@@ -6,4 +6,300 @@ editor: visual
 embed-resources: true
 ---
 
-## Exercise
+## Exercise 3
+
+I completed the following steps to clean the data. 
+
+```{r}
+
+library(readxl)
+library(tidyverse)
+library(here)
+
+#Work directory: [1] "/Users/inesdezcallar/Desktop/Data Science Advance/Problem Set 1/assignment03/eda-mini-project:"
+
+Total_mar_cap <- read_excel(here("data:/Equity_data_1 3.xls"), 
+sheet = "Total Market Cap")
+
+mar_cap_new_listings <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Market Cap New listings")
+
+mar_cap_delistings <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Market Cap Delis")
+
+dom_listed_comp <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Dom listed com")
+
+for_listed_comp <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "For listed com")
+
+total_listed_comp <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Total listed com")
+
+total_value_traded <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Total Value traded EOB")
+
+dom_value_traded <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Dom Value traded")
+
+for_value_traded <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "For Value traded")
+
+total_nb_trades <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Total nb trades")
+
+nb_shares_traded <- read_excel("data:/Equity_data_1 3.xls", 
+sheet = "Nb shares traded")
+
+
+```
+
+
+
+## Exercise 4
+
+I completed the following steps to clean up the data. 
+
+1. Homogenizing the variable "Total Equity" across the different data frames.
+
+```{r}
+
+Total_mar_cap <- Total_mar_cap %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+mar_cap_new_listings <- mar_cap_new_listings %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+mar_cap_delistings <- mar_cap_delistings %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+dom_listed_comp <- dom_listed_comp %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+for_listed_comp <- for_listed_comp %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+total_listed_comp <- total_listed_comp %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+total_value_traded <- total_value_traded %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+dom_value_traded <- dom_value_traded %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+for_value_traded <- for_value_traded %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+total_nb_trades <- total_nb_trades %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+nb_shares_traded <- nb_shares_traded %>%
+ mutate(Year = if_else(str_detect(Year, "Total Equity Market"), "Total Equity Market", Year))
+
+
+```
+
+
+2. Pivoting to a longer-format.
+
+```{r}
+
+Total_mar_cap <- Total_mar_cap%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "total_market_capitalization")
+
+mar_cap_new_listings <- mar_cap_new_listings%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "mar_cap_new_lis")
+
+
+mar_cap_delistings <- mar_cap_delistings%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "mar_cap_delis")
+
+
+dom_listed_comp <- dom_listed_comp%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "dom_listed_companies")
+
+for_listed_comp <- for_listed_comp%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "for_listed_companies")
+
+total_listed_comp <- total_listed_comp%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "total_listed_companies")
+
+total_value_traded <- total_value_traded%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "total_value_trade")
+
+dom_value_traded <- dom_value_traded%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "dom_value_trade")
+
+for_value_traded <- for_value_traded%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "for_value_trade")
+
+total_nb_trades <- total_nb_trades%>%
+pivot_longer(cols = starts_with("20"), 
+             names_to = "year",
+             values_to = "total_nb_trade")
+
+
+```
+
+
+3. Joining data frames. 
+
+
+```{r}
+
+Equity_ft <- Total_mar_cap %>%
+  full_join(mar_cap_new_listings, by = c("year", "Year"))%>%
+  full_join(mar_cap_delistings, by = c("year", "Year"))%>%
+  full_join(dom_listed_comp, by = c("year", "Year"))%>%
+  full_join(for_listed_comp, by = c("year", "Year"))%>%
+  full_join(total_listed_comp, by = c("year", "Year"))%>%
+  full_join(total_value_traded, by = c("year", "Year"))%>%
+  full_join(dom_value_traded , by = c("year", "Year"))%>%
+  full_join(for_value_traded, by = c("year", "Year"))%>%
+  full_join(total_nb_trades, by = c("year", "Year"))
+
+```
+
+
+4. Creating new variables, renaming existing ones, and selecting the 10 final variables. 
+
+```{r}
+
+
+Equity_ft <- Equity_ft%>%
+mutate(member_status = "Yes")%>%
+rename(stock_ex = Year)%>%
+filter(stock_ex != " BATS Global Markets")
+
+
+
+Equity_ft <- Equity_ft %>%
+  mutate(Region = case_when(
+    `stock_ex` == "Abu Dhabi Securities Exchange" ~ "MENA",
+    `stock_ex` == "Amman Stock Exchange" ~ "MENA",
+    `stock_ex` == "Bahrain Bourse" ~ "MENA",
+    `stock_ex` == "Boursa Kuwait" ~ "MENA",
+    `stock_ex` == "Bourse de Casablanca" ~ "MENA",
+    `stock_ex` == "Tunis Stock Exchange" ~ "MENA",
+    `stock_ex` == "Palestine Exchange" ~ "MENA",
+    `stock_ex` == "The Egyptian Exchange" ~ "MENA",
+    `stock_ex` == "Saudi Exchange (Tadawul)" ~ "MENA",
+    `stock_ex` == "Dubai Financial Market" ~ "MENA",
+    `stock_ex` == "Tel-Aviv Stock Exchange" ~ "MENA",
+    `stock_ex` == "The Egyptian Exchange" ~ "MENA",
+    `stock_ex` == "Qatar Stock Exchange" ~ "MENA",
+    `stock_ex` == "Muscat Stock Exchange" ~ "MENA",
+    `stock_ex` == "Stock Exchange of Mauritius" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Dar Es Salaam Stock Exchange" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Ghana Stock Exchange" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Johannesburg Stock Exchange" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Nairobi Securities Exchange" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Nigerian Exchange" ~ "Sub-Saharan Africa",
+    `stock_ex` == "Astana International Exchange" ~ "Asia",
+    `stock_ex` == "Borsa Istanbul" ~ "Asia",
+    `stock_ex` == "Colombo Stock Exchange" ~ "Asia",
+    `stock_ex` == "Indonesia Stock Exchange" ~ "Asia",
+    `stock_ex` == "Bursa Malaysia" ~ "Asia",
+    `stock_ex` == "Kazakhstan Stock Exchange" ~ "Asia",
+    `stock_ex` == "Taipei Exchange" ~ "Asia",
+    `stock_ex` == "Philippine Stock Exchange" ~ "Asia",
+    `stock_ex` == "The Stock Exchange of Thailand" ~ "Asia",
+    `stock_ex` == "Taiwan Stock Exchange" ~ "Asia",
+    `stock_ex` == "Dhaka Stock Exchange" ~ "Asia",
+     `stock_ex` == "Athens Stock Exchange" ~ "Europe",
+    `stock_ex` == "Malta Stock Exchange" ~ "Europe",
+    `stock_ex` == "NASDAQ OMX Riga" ~ "Europe",
+    `stock_ex` == "Cyprus Stock Exchange" ~ "Europe",
+    `stock_ex` == "Nasdaq Nordic and Baltics" ~ "Europe",
+    `stock_ex` == "Warsaw Stock Exchange" ~ "Europe",
+    `stock_ex` == "NASDAQ OMX Nordic Iceland" ~ "Europe",
+    `stock_ex` == "NASDAQ OMX Vilnius" ~ "Europe",
+    `stock_ex` == "NASDAQ OMX Tallinn" ~ "Europe",
+    `stock_ex` == "NASDAQ OMX Vilnius" ~ "Europe",
+    `stock_ex` == "B3 - Brasil Bolsa Balcão" ~ "Latin America",
+    `stock_ex` == "Bermuda Stock Exchange" ~ "Latin America",
+    `stock_ex` == "Bolsa de Valores de Caracas" ~ "Latin America",
+    `stock_ex` == "Bolsa de Valores de Colombia" ~ "Latin America",
+    `stock_ex` == "Bolsa de Comercio de Rosario" ~ "Latin America",
+    `stock_ex` == "Bolsa de Comercio de Santiago" ~ "Latin America",
+    `stock_ex` == "Bolsa de Valores de Lima" ~ "Latin America",
+    `stock_ex` == "Bolsa Electronica de Chile Bolsa Latinoamericana de Valores (Latinex)" ~ "Latin America",
+    `stock_ex` == "Bolsa Mexicana de Valores" ~ "Latin America",
+    `stock_ex` == "Rio de Janeiro Stock Exchange" ~ "Latin America",
+    TRUE ~ NA  
+  ))
+
+Equity_ft <- Equity_ft %>%
+  mutate(MSCI = case_when(
+    `stock_ex` == "Abu Dhabi Securities Exchange" ~ "Frontier Market",
+    `stock_ex` == "Amman Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Bahrain Bourse" ~ "Frontier Market",
+    `stock_ex` == "Bourse de Casablanca" ~ "Frontier Market",
+    `stock_ex` == "Tunis Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Muscat Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Stock Exchange of Mauritius" ~ "Frontier Market",
+    `stock_ex` == "Nairobi Securities Exchange" ~ "Frontier Market",
+    `stock_ex` == "Astana International Exchange" ~ "Frontier Market",
+    `stock_ex` == "Colombo Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Kazakhstan Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "Dhaka Stock Exchange" ~ "Frontier Market",
+    `stock_ex` == "NASDAQ OMX Riga" ~ "Frontier Market",
+    `stock_ex` == "NASDAQ OMX Nordic Iceland" ~ "Frontier Market",
+    `stock_ex` == "NASDAQ OMX Vilnius" ~ "Frontier Market",
+    `stock_ex` == "NASDAQ OMX Tallinn" ~ "Frontier Market",
+    `stock_ex` == "NASDAQ OMX Vilnius" ~ "Frontier Market",
+    `stock_ex` == "The Egyptian Exchange" ~ "Emerging Market",
+    `stock_ex` == "Qatar Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Dubai Financial Market" ~ "Emerging Market",
+    `stock_ex` == "Abu Dhabi Securities Exchange" ~ "Emerging Market",
+    `stock_ex` == "Qatar Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Boursa Kuwait" ~ "Emerging Market",
+    `stock_ex` == "Saudi Exchange (Tadawul)" ~ "Emerging Market",
+    `stock_ex` == "Johannesburg Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Borsa Istanbul" ~ "Emerging Market",
+    `stock_ex` == "Indonesia Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Bursa Malaysia" ~ "Emerging Market",
+    `stock_ex` == "Taipei Exchange" ~ "Emerging Market",
+    `stock_ex` == "Philippine Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "The Stock Exchange of Thailand" ~ "Emerging Market",
+    `stock_ex` == "Athens Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Warsaw Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "Taiwan Stock Exchange" ~ "Emerging Market",
+    `stock_ex` == "B3 - Brasil Bolsa Balcão" ~ "Emerging Market",
+    `stock_ex` == "Bolsa de Valores de Colombia" ~ "Emerging Market",
+    `stock_ex` == "Bolsa de Comercio de Santiago" ~ "Emerging Market",
+    `stock_ex` == "Bolsa de Valores de Lima" ~ "Emerging Market",
+    `stock_ex` == "Bolsa Electronica de Chile Bolsa Latinoamericana de Valores (Latinex)" ~ "Emerging Market",
+    `stock_ex` == "Bolsa Mexicana de Valores" ~ "Emerging Market",
+    `stock_ex` == "Rio de Janeiro Stock Exchange" ~ "Emerging Market",
+    TRUE ~ NA  
+  ))
+
+
+
+Equity_ft <- Equity_ft%>%
+select(stock_ex, year, total_market_capitalization, total_listed_companies, dom_listed_companies, total_value_trade, for_value_trade, dom_value_trade, MSCI, Region)
+
+```
+
+
+
